@@ -52,6 +52,14 @@
       PLATFORM: "Win32"
       CONFIGURATION: "Release"
 
+    - COMPILER: "clang-cl"
+      HOST:     "cmake-visual"
+      PLATFORM: "x64"
+      CONFIGURATION: "Release"
+      GENERATOR: "Visual Studio 15 2017"
+      TOOLSET:   "LLVM"
+      APPVEYOR_BUILD_WORKER_IMAGE: "Visual Studio 2017"
+
   install:
   - ECHO Installing %COMPILER% %PLATFORM% %CONFIGURATION%
   - SET PATH_ORIGINAL=%PATH%
@@ -154,6 +162,15 @@
       COPY build\VS2010\bin\%PLATFORM%_%CONFIGURATION%\fuzzer.exe tests\fuzzer_VS2015_%PLATFORM%_%CONFIGURATION%.exe &&
       COPY build\VS2010\bin\%PLATFORM%_%CONFIGURATION%\*.exe tests\
     )
+  - if [%HOST%]==[cmake-visual] (
+      ECHO *** &&
+      ECHO *** Building %GENERATOR% ^(%TOOLSET%^) %PLATFORM%\%CONFIGURATION% &&
+      PUSHD build\cmake &&
+      cmake -G "%GENERATOR%" -T %TOOLSET% -A %PLATFORM% -DZSTD_BUILD_TESTS:BOOL=ON . &&
+      cmake --build . --config %CONFIGURATION% -j4 &&
+      POPD &&
+      ECHO ***
+    )
 
   test_script:
   - ECHO Testing %COMPILER% %PLATFORM% %CONFIGURATION%
@@ -205,23 +222,31 @@
       HOST:     "mingw"
       PLATFORM: "x64"
       SCRIPT:   "CFLAGS='--target=x86_64-w64-mingw32 -Werror -Wconversion -Wno-sign-conversion' make -j allzstd V=1"
+    
+    - COMPILER: "visual"
+      HOST:     "visual"
+      PLATFORM: "x64"
+      CONFIGURATION: "Debug"
+    - COMPILER: "visual"
+      HOST:     "visual"
+      PLATFORM: "Win32"
+      CONFIGURATION: "Debug"
+    - COMPILER: "visual"
+      HOST:     "visual"
+      PLATFORM: "x64"
+      CONFIGURATION: "Release"
+    - COMPILER: "visual"
+      HOST:     "visual"
+      PLATFORM: "Win32"
+      CONFIGURATION: "Release"
 
-    - COMPILER: "visual"
-      HOST:     "visual"
-      PLATFORM: "x64"
-      CONFIGURATION: "Debug"
-    - COMPILER: "visual"
-      HOST:     "visual"
-      PLATFORM: "Win32"
-      CONFIGURATION: "Debug"
-    - COMPILER: "visual"
-      HOST:     "visual"
+    - COMPILER: "clang-cl"
+      HOST:     "cmake-visual"
       PLATFORM: "x64"
       CONFIGURATION: "Release"
-    - COMPILER: "visual"
-      HOST:     "visual"
-      PLATFORM: "Win32"
-      CONFIGURATION: "Release"
+      GENERATOR: "Visual Studio 15 2017"
+      TOOLSET:   "LLVM"
+      APPVEYOR_BUILD_WORKER_IMAGE: "Visual Studio 2017"
 
   install:
   - ECHO Installing %COMPILER% %PLATFORM% %CONFIGURATION%
@@ -281,7 +306,15 @@
       COPY build\VS2010\bin\%PLATFORM%_%CONFIGURATION%\fuzzer.exe tests\fuzzer_VS2015_%PLATFORM%_%CONFIGURATION%.exe &&
       COPY build\VS2010\bin\%PLATFORM%_%CONFIGURATION%\*.exe tests\
     )
-
+  - if [%HOST%]==[cmake-visual] (
+      ECHO *** &&
+      ECHO *** Building %GENERATOR% ^(%TOOLSET%^) %PLATFORM%\%CONFIGURATION% &&
+      PUSHD build\cmake &&
+      cmake -G "%GENERATOR%" -T %TOOLSET% -A %PLATFORM% -DZSTD_BUILD_TESTS:BOOL=ON . &&
+      cmake --build . --config %CONFIGURATION% -j4 &&
+      POPD &&
+      ECHO ***
+    )
 
   test_script:
   - ECHO Testing %COMPILER% %PLATFORM% %CONFIGURATION%
