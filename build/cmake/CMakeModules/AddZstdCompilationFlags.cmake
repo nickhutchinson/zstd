@@ -21,7 +21,10 @@ function(EnableCompilerFlag _flag _C _CXX)
 endfunction()
 
 macro(ADD_ZSTD_COMPILATION_FLAGS)
-    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang" OR MINGW) #Not only UNIX but also WIN32 for MinGW
+    #Not only UNIX but also WIN32 for MinGW
+    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
+        (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT MSVC) OR
+        MINGW)
         #Set c++11 by default
         EnableCompilerFlag("-std=c++11" false true)
         #Set c99 by default
