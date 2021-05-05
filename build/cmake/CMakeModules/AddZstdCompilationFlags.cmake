@@ -47,16 +47,14 @@ macro(ADD_ZSTD_COMPILATION_FLAGS)
             EnableCompilerFlag("/MP" true true)
         endif ()
 
+        # UNICODE SUPPORT
+        EnableCompilerFlag("/D_UNICODE" true true)
+        EnableCompilerFlag("/DUNICODE" true true)
+
         # Enable asserts in Debug mode
         if (CMAKE_BUILD_TYPE MATCHES "Debug")
             EnableCompilerFlag("/DDEBUGLEVEL=1" true true)
         endif ()
-    endif ()
-
-    if (WIN32)
-        # UNICODE SUPPORT
-        EnableCompilerFlag("/D_UNICODE" true true)
-        EnableCompilerFlag("/DUNICODE" true true)
     endif ()
 
     # Remove duplicates compilation flags
